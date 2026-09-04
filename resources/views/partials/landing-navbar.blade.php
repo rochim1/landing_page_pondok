@@ -1,0 +1,7 @@
+@php($siteBrandName = $brandName ?? 'Pondok Pesantren Tahfidzul Qur’an Al-Madinatul Kamilah')
+<nav class="site-nav" data-site-navbar aria-label="Navigasi utama">
+ <a class="site-nav__brand" href="{{ url('/') }}"><img src="{{ asset('logo/al-madinatul-kamilah.png') }}" alt="Logo {{ $siteBrandName }}"><span><strong>PPTQ</strong><small>Al-Madinatul Kamilah</small></span></a>
+ <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-site-nav-toggle><i class="ri-menu-3-line"></i><span class="sr-only">Buka menu</span></button>
+ <div class="site-nav__links" id="site-menu" data-site-nav-links><a href="{{ url('/#home') }}">Beranda</a><a href="{{ url('/#about') }}">Profil</a><a href="{{ url('/#program') }}">Program</a><a href="{{ route('landing.gallery.index') }}">Galeri</a><a href="{{ route('landing.news.index') }}">Kabar</a><a class="site-nav__cta" href="{{ url('/#contact') }}">Hubungi Kami <i class="ri-arrow-right-up-line"></i></a></div>
+</nav>
+<script>document.addEventListener('DOMContentLoaded',()=>{const n=document.querySelector('[data-site-navbar]'),t=n?.querySelector('[data-site-nav-toggle]'),l=n?.querySelector('[data-site-nav-links]');if(!n||!t||!l)return;const s=o=>{n.classList.toggle('is-open',o);t.setAttribute('aria-expanded',String(o));t.querySelector('i').className=o?'ri-close-line':'ri-menu-3-line'};t.addEventListener('click',()=>s(!n.classList.contains('is-open')));l.addEventListener('click',()=>s(false));document.addEventListener('click',e=>{if(!n.contains(e.target))s(false)})});</script>
