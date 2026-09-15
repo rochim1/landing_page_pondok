@@ -8,18 +8,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Noto+Naskh+Arabic:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('vendor/remixicon/remixicon.css') }}">
     <style>
         :root {
             color-scheme: light;
             --font-sans: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-heading: "DM Serif Display", Georgia, serif;
-            --text: #2b1825;
-            --muted: #60485a;
-            --brand: #762546;
-            --brand-soft: #fbe8f0;
-            --line: rgba(244, 171, 202, 0.35);
+            --font-heading: "Lora", Georgia, serif;
+            --text: #183a31;
+            --muted: #64786f;
+            --brand: #123d32;
+            --brand-soft: #edf7f0;
+            --line: rgba(22, 133, 91, 0.2);
         }
 
         * { box-sizing: border-box; }
@@ -28,7 +28,7 @@
             margin: 0;
             min-height: 100vh;
             font-family: var(--font-sans);
-            background: #fff7fa;
+            background: #fbf8ef;
             color: var(--text);
             line-height: 1.65;
             letter-spacing: -0.006em;
@@ -46,6 +46,33 @@
             margin: 0 auto;
             padding: 16px 0 56px;
         }
+
+        .site-nav {
+            position: sticky;
+            top: 12px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            min-height: 72px;
+            padding: 10px 16px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(255,255,255,.96);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 16px 44px rgba(18,61,50,.09);
+        }
+
+        .site-nav__brand { display:flex;align-items:center;gap:11px;min-width:0; }
+        .site-nav__brand img { width:50px;height:50px;flex:0 0 50px;object-fit:contain; }
+        .site-nav__brand span { display:grid;line-height:1.08; }
+        .site-nav__brand strong { color:var(--brand);font:700 1rem var(--font-heading);letter-spacing:.04em; }
+        .site-nav__brand small { color:#a77d28;font-size:.67rem;font-weight:800; }
+        .site-nav__links { display:flex;align-items:center;gap:18px;color:var(--brand);font-size:.72rem;font-weight:800;text-transform:uppercase; }
+        .site-nav__cta { padding:10px 14px;border-radius:999px;background:#16855b;color:#fff; }
+        .site-nav__toggle { display:none;width:42px;height:42px;border:0;border-radius:12px;background:var(--brand);color:#fff;font-size:1.25rem; }
+        .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0); }
 
         .navbar {
             position: sticky;
@@ -69,7 +96,7 @@
             min-width: 0;
             gap: 12px;
             font-weight: 800;
-            color: #622e43;
+            color: #123d32;
         }
 
         .brand img {
@@ -101,8 +128,8 @@
 
         .back-link:hover,
         .back-link:focus-visible {
-            background: #f5d6e3;
-            color: #5f1d38;
+            background: #dfeee5;
+            color: #0b3026;
         }
 
         .detail-hero {
@@ -125,7 +152,7 @@
         h1 {
             max-width: 900px;
             margin: 0;
-            color: #482438;
+            color: #123d32;
             font-family: var(--font-heading);
             font-weight: 400;
             font-size: clamp(2.2rem, 6vw, 4.2rem);
@@ -167,8 +194,8 @@
             object-fit: cover;
             border-radius: 30px;
             border: 1px solid var(--line);
-            box-shadow: 0 28px 80px rgba(181, 106, 153, 0.16);
-            background: #f7dce7;
+            box-shadow: 0 28px 80px rgba(18, 61, 50, 0.13);
+            background: #e5f0e8;
         }
 
         .content-layout {
@@ -182,12 +209,12 @@
             border-radius: 28px;
             background: #fff;
             border: 1px solid var(--line);
-            box-shadow: 0 24px 60px rgba(181, 106, 153, 0.08);
+            box-shadow: 0 24px 60px rgba(18, 61, 50, 0.08);
         }
 
         .article p,
         .article li {
-            color: #60465a;
+            color: #405f55;
             font-size: 1rem;
             line-height: 1.85;
         }
@@ -299,6 +326,13 @@
             }
         }
 
+        @media (max-width: 900px) {
+            .site-nav__toggle { display:block; }
+            .site-nav__links { position:absolute;top:78px;left:0;right:0;display:none;padding:14px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 18px 45px rgba(18,61,50,.13); }
+            .site-nav.is-open .site-nav__links { display:grid; }
+            .site-nav__links a { padding:9px; }
+        }
+
         @media (max-width: 640px) {
             .page {
                 width: min(100% - 24px, 1120px);
@@ -321,12 +355,17 @@
             .article {
                 padding: 24px;
             }
+
+            .site-nav__toggle { display:block; }
+            .site-nav__links { position:absolute;top:78px;left:0;right:0;display:none;padding:14px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 18px 45px rgba(18,61,50,.13); }
+            .site-nav.is-open .site-nav__links { display:grid; }
+            .site-nav__links a { padding:9px; }
         }
     </style>
 </head>
 <body>
     <div class="page">
-        @include('partials.landing-navbar')
+        @include('partials.landing-navbar', ['whatsappUrl' => 'https://wa.me/6287831633012?text=' . rawurlencode("Assalamu'alaikum, saya ingin bertanya mengenai Pondok Pesantren Al-Madinah Al-Kamilah.")])
 
         <main>
             <section class="detail-hero">

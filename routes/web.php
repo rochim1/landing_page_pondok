@@ -101,7 +101,7 @@ Route::get('/', function () {
             }
             total
           }
-          GetAllSuperiorities(filter: $superiorityFilter, pagination: { page: 0, limit: 3 }) {
+          GetAllSuperiorities(filter: $superiorityFilter, pagination: { page: 0, limit: 6 }) {
             superiorities {
               title
               description
@@ -278,6 +278,12 @@ Route::get('/', function () {
               content { paragraph text }
               image { url alt caption description }
             }
+            visionMission {
+              title
+              subtitle
+              vision { title content icon color }
+              mission { title icon color items { text } }
+            }
             heroSection {
               titlePrefix
               highlightedTitle
@@ -369,12 +375,12 @@ Route::get('/', function () {
             'instansi_id' => $instansiId,
         ],
         'superiorityFilter' => [
-            'lang' => 'id',
+            'lang' => 'IND',
             'status' => 'active',
             'instansi_id' => $instansiId,
         ],
         'whyChooseUsFilter' => [
-            'lang' => 'id',
+            'lang' => 'IND',
             'status' => 'active',
             'instansi_id' => $instansiId,
         ],
@@ -559,7 +565,7 @@ Route::get('/', function () {
 
     $defaultBrandLogo = landing_instansi_logo();
     $brandName = ($websiteSetting['siteName'] ?? null)
-        ?: ($aboutData['companyInfo']['name'] ?? 'Pondok Pesantren Tahfidzul Qur’an Al-Madinatul Kamilah');
+        ?: ($aboutData['companyInfo']['name'] ?? 'Pondok Pesantren Al-Madinah Al-Kamilah');
     $brandLogo = !empty($websiteSetting['logo'])
         ? landing_instansi_logo($websiteSetting['logo'])
         : $defaultBrandLogo;
@@ -728,7 +734,7 @@ Route::get('/galeri', function () {
         'type' => 'gallery',
         'eyebrow' => 'Galeri',
         'title' => 'Koleksi Foto & Video',
-        'description' => 'Dokumentasi kegiatan belajar, ibadah, dan kebersamaan santri Al-Madinatul Kamilah.',
+        'description' => 'Dokumentasi kegiatan belajar, ibadah, dan kebersamaan santri Al-Madinah Al-Kamilah.',
         'items' => $items,
         'emptyTitle' => 'Belum ada media galeri.',
         'emptyDescription' => 'Foto dan video aktif dari modul Galeri akan tampil di halaman ini.',
@@ -930,13 +936,17 @@ Route::get('/berita/{id}/{slug?}', function (string $id) {
         $article['category_id']['name'] ?? null,
         !empty($article['reading_time']) ? $article['reading_time'] . ' menit baca' : null,
     ]);
+    $contentHtml = trim((string) ($article['content'] ?? ''));
+    if (trim(strip_tags(html_entity_decode($contentHtml))) === '') {
+        $contentHtml = '<p>' . e($article['excerpt'] ?? 'Informasi berita akan segera diperbarui.') . '</p>';
+    }
 
     return view('detail', landing_detail_context([
         'type' => 'berita',
         'eyebrow' => 'Berita',
         'title' => $article['title'] ?? 'Berita Bubba Bloom',
         'description' => $article['excerpt'] ?? '',
-        'contentHtml' => $article['content'] ?? null,
+        'contentHtml' => $contentHtml,
         'content' => $article['content'] ?? $article['excerpt'] ?? '',
         'image' => $image,
         'imageAlt' => $article['featured_image']['alt'] ?? $article['title'] ?? 'Berita Bubba Bloom',

@@ -1,6 +1,6 @@
 @php
     $seoData = is_array($seo ?? null) ? $seo : [];
-    $currentBrand = $brandName ?? ($seoData['organizationName'] ?? 'Pondok Pesantren Tahfidzul Qur’an Al-Madinatul Kamilah');
+    $currentBrand = $brandName ?? ($seoData['organizationName'] ?? 'Pondok Pesantren Al-Madinah Al-Kamilah');
     $hasPageTitle = !empty($title ?? null);
     $pageTitle = $hasPageTitle
         ? trim($title . ' - ' . $currentBrand)
