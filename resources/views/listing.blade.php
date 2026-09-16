@@ -6,19 +6,19 @@
     @include('partials.seo-head')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('vendor/remixicon/remixicon.css') }}">
     <style>
         :root {
             color-scheme: light;
             --font-body: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
-            --font-heading: "DM Serif Display", Georgia, serif;
-            --text: #2b1825;
-            --muted: #60485a;
-            --brand: #762546;
-            --line: rgba(244, 171, 202, 0.35);
+            --font-heading: "Lora", Georgia, serif;
+            --text: #163a46;
+            --muted: #62777f;
+            --brand: #02add0;
+            --brand-dark: #07566a;
+            --accent: #f66243;
+            --line: #d7e9ed;
         }
 
         * { box-sizing: border-box; }
@@ -28,7 +28,7 @@
             min-height: 100vh;
             font-family: var(--font-body);
             color: var(--text);
-            background: linear-gradient(180deg, #241120 0%, #fff7fa 360px, #fff7fa 100%);
+            background: #f8fcfd;
             line-height: 1.65;
             letter-spacing: -0.006em;
             text-rendering: optimizeLegibility;
@@ -40,8 +40,36 @@
         .page {
             width: min(1160px, calc(100% - 32px));
             margin: 0 auto;
-            padding: 16px 0 64px;
+            padding: 0 0 72px;
         }
+
+        .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+
+        .site-nav {
+            position: fixed;
+            z-index: 100;
+            inset: 0 0 auto;
+            height: 84px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 max(24px, calc((100vw - 1180px) / 2));
+            background: rgba(255, 255, 255, var(--nav-bg-alpha, 0));
+            border-bottom: 1px solid rgba(2, 173, 208, var(--nav-border-alpha, 0));
+            box-shadow: 0 10px 35px rgba(4, 49, 61, var(--nav-shadow-alpha, 0));
+            backdrop-filter: blur(18px);
+        }
+
+        .site-nav__brand { display: flex; align-items: center; gap: 11px; }
+        .site-nav__brand img { width: 58px; height: 58px; object-fit: contain; }
+        .site-nav__brand span { display: grid; line-height: 1.08; }
+        .site-nav__brand strong { color: var(--nav-text-color, #fff); font-family: var(--font-heading); font-size: 1.08rem; letter-spacing: .06em; text-shadow: 0 1px 12px rgba(6, 30, 24, var(--nav-text-shadow, .6)); }
+        .site-nav__brand small { color: var(--nav-accent-color, var(--accent)); font-size: .68rem; font-weight: 800; }
+        .site-nav__links { display: flex; align-items: center; gap: 27px; color: var(--nav-text-color, #fff); font-size: .78rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+        .site-nav__links > a:not(.site-nav__cta) { text-shadow: 0 1px 12px rgba(6, 30, 24, var(--nav-text-shadow, .6)); }
+        .site-nav__links > a:not(.site-nav__cta):hover { color: var(--accent); }
+        .site-nav__cta { padding: 12px 18px; border-radius: 99px; background: var(--nav-cta-bg, var(--accent)); color: #fff; }
+        .site-nav__toggle { display: none; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,var(--nav-toggle-border,.34)); border-radius: 12px; background: var(--nav-toggle-bg, rgba(255,255,255,.09)); color: #fff; font-size: 1.4rem; }
 
         .navbar {
             position: sticky;
@@ -65,7 +93,7 @@
             align-items: center;
             gap: 12px;
             min-width: 0;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         .brand img {
@@ -99,8 +127,44 @@
         }
 
         .hero {
-            padding: 76px 0 46px;
+            position: relative;
+            isolation: isolate;
+            padding: 150px 0 54px;
             color: #fff;
+        }
+
+        .hero::before {
+            position: absolute;
+            z-index: -2;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 100vw;
+            content: "";
+            transform: translateX(-50%);
+            background:
+                radial-gradient(circle at 82% 10%, rgba(246, 98, 67, .30), transparent 28%),
+                radial-gradient(circle at 14% 86%, rgba(2, 173, 208, .26), transparent 34%),
+                linear-gradient(128deg, #032b35 0%, #07566a 48%, #0788a4 100%);
+            box-shadow: inset 0 -1px 0 rgba(255,255,255,.12);
+        }
+
+        .hero::after {
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 100vw;
+            content: "";
+            transform: translateX(-50%);
+            opacity: .12;
+            background-image:
+                linear-gradient(30deg, transparent 24%, rgba(255,255,255,.48) 25%, rgba(255,255,255,.48) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.48) 75%, rgba(255,255,255,.48) 76%, transparent 77%),
+                linear-gradient(150deg, transparent 24%, rgba(255,255,255,.34) 25%, rgba(255,255,255,.34) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.34) 75%, rgba(255,255,255,.34) 76%, transparent 77%);
+            background-position: 0 0, 36px 62px;
+            background-size: 72px 124px;
+            mask-image: linear-gradient(90deg, transparent 4%, #000 45%, #000 100%);
         }
 
         .eyebrow {
@@ -108,7 +172,7 @@
             align-items: center;
             gap: 8px;
             margin-bottom: 14px;
-            color: #eedde6;
+            color: #cdeff6;
             font-weight: 700;
         }
 
@@ -117,18 +181,26 @@
             margin: 0;
             font-family: var(--font-heading);
             font-style: normal;
-            font-weight: 400;
-            font-size: clamp(3rem, 8vw, 6rem);
-            line-height: 0.92;
-            letter-spacing: 0;
+            font-weight: 700;
+            font-size: clamp(2.65rem, 6.5vw, 5.2rem);
+            line-height: 1.02;
+            letter-spacing: -0.025em;
         }
 
         .lead {
+            position: relative;
+            z-index: 2;
             max-width: 720px;
             margin: 22px 0 0;
-            color: #eedde6;
+            color: #d9f3f7;
             font-size: 1.08rem;
             font-weight: 400;
+        }
+
+        .hero > .eyebrow,
+        .hero > h1 {
+            position: relative;
+            z-index: 2;
         }
 
         .filter-panel {
@@ -255,8 +327,8 @@
             margin: 0;
             overflow: hidden;
             border-radius: 26px;
-            background: #2b1825;
-            box-shadow: 0 22px 58px rgba(75, 28, 54, 0.16);
+            background: #04313d;
+            box-shadow: 0 22px 58px rgba(4, 49, 61, 0.16);
         }
 
         .gallery-feed-item:nth-child(8n + 1),
@@ -301,6 +373,13 @@
             transform: scale(1.035);
         }
 
+        .gallery-detail-link {
+            position: absolute;
+            inset: 0;
+            z-index: 4;
+            border-radius: inherit;
+        }
+
         .gallery-feed-caption {
             position: absolute;
             right: 0;
@@ -309,7 +388,7 @@
             z-index: 2;
             padding: 58px 20px 18px;
             color: #ffffff;
-            background: linear-gradient(180deg, transparent, rgba(20, 8, 16, 0.92));
+            background: linear-gradient(180deg, transparent, rgba(4, 49, 61, 0.94));
             pointer-events: none;
         }
 
@@ -330,7 +409,7 @@
             display: -webkit-box;
             margin: 7px 0 0;
             overflow: hidden;
-            color: #f4e8ee;
+            color: #e5f7fa;
             font-size: 0.9rem;
             line-height: 1.5;
             text-shadow: 0 2px 10px rgba(0,0,0,0.55);
@@ -349,7 +428,7 @@
             place-items: center;
             border: 1px solid rgba(255,255,255,0.3);
             border-radius: 999px;
-            background: rgba(36,19,31,0.72);
+            background: rgba(4,49,61,0.76);
             color: #ffffff;
             backdrop-filter: blur(10px);
         }
@@ -396,9 +475,9 @@
             color: #4e233b;
             font-family: var(--font-heading);
             font-style: normal;
-            font-weight: 400;
+            font-weight: 700;
             font-size: clamp(1.8rem, 3vw, 2.45rem);
-            line-height: 1;
+            line-height: 1.12;
         }
 
         .card p {
@@ -483,18 +562,16 @@
         }
 
         @media (max-width: 640px) {
-            .navbar {
-                align-items: flex-start;
-                flex-direction: column;
-                border-radius: 22px;
-            }
-
-            .brand span {
-                white-space: normal;
-            }
+            .site-nav { height: 74px; padding: 0 15px; }
+            .site-nav__brand img { width: 48px; height: 48px; }
 
             .hero {
-                padding-top: 54px;
+                padding: 122px 0 46px;
+            }
+
+            h1 {
+                font-size: clamp(2.25rem, 10vw, 3.15rem);
+                line-height: 1.06;
             }
 
             .filter-grid {
@@ -522,6 +599,16 @@
                 min-height: 0;
                 aspect-ratio: 4 / 5;
             }
+        }
+
+        @media (max-width: 900px) {
+            .site-nav__links { position: absolute; top: 75px; left: 16px; right: 16px; display: none; padding: 16px; border-radius: 18px; background: #fff; color: var(--brand-dark); box-shadow: 0 20px 50px rgba(4,49,61,.2); }
+            .site-nav.is-open { background: rgba(255,255,255,.98); }
+            .site-nav.is-open .site-nav__links { display: grid; gap: 3px; }
+            .site-nav.is-open .site-nav__brand strong { color: var(--brand-dark) !important; text-shadow: none; }
+            .site-nav__links a { padding: 10px; }
+            .site-nav__links > a:not(.site-nav__cta) { color: var(--brand-dark); text-shadow: none; }
+            .site-nav__toggle { display: block; }
         }
     </style>
 </head>
@@ -678,6 +765,7 @@
                             $image = $mediaUrl($item['image'] ?? null);
                             $galleryPath = $image ? (parse_url($image, PHP_URL_PATH) ?? '') : '';
                             $galleryIsVideo = (bool) preg_match('/\.(mp4|webm|ogg|mov|m4v)$/i', $galleryPath);
+                            $galleryUrl = !empty($item['_id']) ? route('landing.gallery.detail', ['id' => $item['_id']]) : null;
                         @endphp
                         <figure class="gallery-feed-item{{ $galleryIsVideo ? ' is-video' : '' }}">
                             <div class="gallery-feed-media">
@@ -687,9 +775,12 @@
                                         Browser Anda belum mendukung pemutar video.
                                     </video>
                                 @else
-                                    <img src="{{ $image ?? asset('images/spa-baby-hero.jpg') }}" alt="{{ $item['title'] ?? 'Galeri Bubba Bloom' }}" loading="lazy">
+                                    <img src="{{ $image ?? asset('logo/al-madinatul-kamilah.png') }}" alt="{{ $item['title'] ?? 'Galeri Pondok' }}" loading="lazy">
                                 @endif
                             </div>
+                            @if($galleryUrl && !$galleryIsVideo)
+                                <a class="gallery-detail-link" href="{{ $galleryUrl }}" aria-label="Lihat detail {{ $item['title'] ?? 'galeri pondok' }}"></a>
+                            @endif
                             <span class="gallery-media-kind" aria-label="{{ $galleryIsVideo ? 'Video' : 'Foto' }}">
                                 <i class="{{ $galleryIsVideo ? 'ri-play-fill' : 'ri-image-line' }}" aria-hidden="true"></i>
                             </span>

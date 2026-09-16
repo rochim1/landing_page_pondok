@@ -111,6 +111,14 @@
             font-size: 0.86rem;
         }
 
+        .floating-actions a.floating-action-btn {
+            background: var(--coral, #f66243) !important;
+        }
+
+        .floating-actions button.floating-action-btn {
+            background: var(--navy, #07566a) !important;
+        }
+
         @media (max-width: 575px) {
             .floating-actions-bottom-right,
             .floating-actions-top-right {

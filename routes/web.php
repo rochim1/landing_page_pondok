@@ -732,8 +732,8 @@ Route::get('/galeri', function () {
 
     return view('listing', landing_detail_context([
         'type' => 'gallery',
-        'eyebrow' => 'Galeri',
-        'title' => 'Koleksi Foto & Video',
+        'eyebrow' => 'Galeri Pondok',
+        'title' => 'Jejak Kegiatan Santri',
         'description' => 'Dokumentasi kegiatan belajar, ibadah, dan kebersamaan santri Al-Madinah Al-Kamilah.',
         'items' => $items,
         'emptyTitle' => 'Belum ada media galeri.',
