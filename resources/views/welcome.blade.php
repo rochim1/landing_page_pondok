@@ -34,6 +34,32 @@ body .site-nav{border-bottom-color:rgba(2,173,208,var(--nav-border-alpha,0));box
 .head h2,.about h2,.welcome__copy h2,.cta h2{font-size:clamp(1.9rem,3.3vw,3.15rem);line-height:1.1}
 .program-section .head h2{font-size:clamp(1.9rem,3vw,2.85rem)}
 @media(max-width:600px){.head h2,.about h2,.welcome__copy h2,.cta h2,.program-section .head h2{font-size:1.85rem;line-height:1.15}}
+/* Scroll motion: reveal sekali, stagger ringan, dan tetap responsif. */
+:root{--motion-duration:720ms;--motion-ease:cubic-bezier(.22,1,.36,1);--motion-distance:34px}
+main>section{scroll-margin-top:84px}
+.reveal{opacity:1;transform:none;filter:none}
+html.motion-ready .reveal{--reveal-x:0px;--reveal-y:var(--motion-distance);opacity:0;transform:translate3d(var(--reveal-x),var(--reveal-y),0) scale(.985);filter:blur(7px);will-change:opacity,transform,filter}
+html.motion-ready .reveal[data-reveal="left"]{--reveal-x:calc(var(--motion-distance) * -1);--reveal-y:0px}
+html.motion-ready .reveal[data-reveal="right"]{--reveal-x:var(--motion-distance);--reveal-y:0px}
+html.motion-ready .reveal[data-reveal="scale"]{--reveal-x:0px;--reveal-y:14px;transform:translate3d(0,14px,0) scale(.94)}
+html.motion-ready .reveal.on{animation:pondok-reveal var(--motion-duration) var(--motion-ease) var(--reveal-delay,0ms) forwards}
+@keyframes pondok-reveal{to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}}
+@media(min-width:901px) and (prefers-reduced-motion:no-preference){html:not(.section-wheel-ready){scroll-snap-type:y mandatory}main>section{scroll-snap-align:start;scroll-snap-stop:always}html.section-wheel-ready{scroll-snap-type:none}}
+@media(max-width:600px){:root{--motion-duration:600ms;--motion-distance:22px}html.motion-ready .reveal{filter:blur(4px)}}
+@media(prefers-reduced-motion:reduce){html{scroll-snap-type:none!important;scroll-behavior:auto}.reveal,html.motion-ready .reveal,html.motion-ready .reveal.on{opacity:1!important;transform:none!important;filter:none!important;animation:none!important;transition:none!important}}
+/* Ornamen Islami kontemporer: pola tenang, divider arabesque, dan detail mihrab. */
+.section{position:relative;isolation:isolate;overflow:hidden}.section:before{content:'';position:absolute;z-index:-1;inset:0;pointer-events:none;background-image:linear-gradient(90deg,rgba(255,255,255,.9),rgba(255,255,255,.55) 22%,rgba(255,255,255,.55) 78%,rgba(255,255,255,.9)),url('{{ asset('assets/islamic-pattern-gold.jpg') }}');background-position:center,center;background-size:auto,560px auto;background-repeat:no-repeat,repeat;opacity:.11}.section.soft:before{background-image:linear-gradient(90deg,rgba(237,249,251,.96),rgba(237,249,251,.67) 24%,rgba(237,249,251,.67) 76%,rgba(237,249,251,.96)),url('{{ asset('assets/islamic-pattern-gold.jpg') }}');opacity:.16}.section>.shell{position:relative;z-index:1}.section>.shell:before{content:'۞';position:absolute;left:50%;top:-68px;display:grid;width:37px;height:37px;place-items:center;border:1px solid rgba(2,173,208,.28);border-radius:50%;background:var(--cream);color:var(--coral);font:600 1.05rem/1 var(--arabic);transform:translateX(-50%) rotate(45deg);box-shadow:0 0 0 7px rgba(255,255,255,.75)}.section>.shell:after{content:'';position:absolute;left:50%;top:-50px;width:min(290px,34vw);height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);transform:translateX(-50%);opacity:.38}.section>.shell:before{z-index:2}.section>.shell>*{position:relative;z-index:1}
+.head .eyebrow,.about .eyebrow,.welcome .eyebrow{position:relative;padding-left:43px}.head .eyebrow:before,.about .eyebrow:before,.welcome .eyebrow:before{position:absolute;left:0}.head .eyebrow:after,.about .eyebrow:after,.welcome .eyebrow:after{content:'◆';margin-left:3px;color:var(--coral);font-size:.52rem}
+.identity-card,.news__item{position:relative;overflow:hidden}.identity-card:before,.news__item:after{content:'۞';position:absolute;right:-15px;bottom:-24px;color:rgba(2,173,208,.07);font:74px/1 var(--arabic);pointer-events:none}.identity-card:after{content:'';position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,var(--cyan),var(--coral),transparent 82%)}.identity-card i{position:relative;display:grid;width:46px;height:52px;place-items:center;border-radius:25px 25px 10px 10px;background:linear-gradient(160deg,#e8f9fc,#fff2ef);box-shadow:inset 0 0 0 1px rgba(2,173,208,.13)}
+.identity-vision,.ppdb-panel{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.14);border-radius:90px 90px 22px 22px}.identity-vision:after,.ppdb-panel:after{content:'۞';position:absolute;right:-22px;bottom:-34px;color:rgba(255,255,255,.065);font:112px/1 var(--arabic)}.identity-mission li{overflow:hidden}.identity-mission li:after{content:'';position:absolute;inset:0 0 0 auto;width:54px;background:url('{{ asset('assets/islamic-pattern-gold.jpg') }}') center/180px auto;opacity:.09}
+.hero{isolation:isolate;background:radial-gradient(circle at 82% 28%,rgba(2,173,208,.28),transparent 31%),radial-gradient(circle at 10% 78%,rgba(246,98,67,.09),transparent 28%),linear-gradient(118deg,#032d38 0%,#07566a 57%,#087f98 100%)}.hero:before{z-index:0;opacity:1;background-image:radial-gradient(circle at 78% 34%,rgba(124,226,239,.13),transparent 29%),linear-gradient(30deg,transparent 23%,rgba(119,221,234,.065) 24%,rgba(119,221,234,.065) 26%,transparent 27%,transparent 73%,rgba(119,221,234,.065) 74%,rgba(119,221,234,.065) 76%,transparent 77%),linear-gradient(150deg,transparent 23%,rgba(246,98,67,.055) 24%,rgba(246,98,67,.055) 26%,transparent 27%,transparent 73%,rgba(246,98,67,.055) 74%,rgba(246,98,67,.055) 76%,transparent 77%);background-position:center,0 0,0 0;background-size:auto,88px 152px,88px 152px;mask-image:linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.3) 46%,rgba(0,0,0,.92));-webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.3) 46%,rgba(0,0,0,.92))}.hero:after{z-index:0;right:-95px;top:-16px;color:rgba(98,220,234,.065);font-size:620px;transform:rotate(8deg)}
+.hero__lantern-art{position:absolute;z-index:1;left:max(14px,calc((100vw - 1370px)/2));top:72px;width:clamp(118px,12vw,178px);height:auto;pointer-events:none;filter:drop-shadow(0 18px 30px rgba(0,0,0,.22));opacity:.94;transform-origin:49% 0;will-change:transform;animation:lantern-sway 5.8s cubic-bezier(.45,.05,.55,.95) infinite}
+@keyframes lantern-sway{0%,100%{transform:rotate(-1.8deg) translate3d(-1px,0,0)}50%{transform:rotate(1.8deg) translate3d(2px,4px,0)}}
+.hero__photo{position:relative;aspect-ratio:4/4.7;overflow:hidden;border:1px solid rgba(145,220,233,.8);border-radius:210px 210px 34px 34px;background:#07566a;box-shadow:0 35px 90px rgba(0,0,0,.38)}.hero__photo:before{content:'';position:absolute;z-index:1;inset:0;background:linear-gradient(180deg,rgba(4,49,61,.04) 48%,rgba(4,49,61,.68) 100%);pointer-events:none}.hero__photo:after{content:'';position:absolute;z-index:2;inset:14px;border:1px solid rgba(255,255,255,.3);border-radius:196px 196px 25px 25px;pointer-events:none}.hero__photo>img{width:100%;height:100%;object-fit:cover;object-position:center 58%;transform:scale(1.015)}.hero__seal{position:absolute;z-index:3;left:28px;bottom:27px;display:grid;width:76px;height:76px;place-items:center;padding:9px;border:1px solid rgba(255,255,255,.75);border-radius:50%;background:rgba(255,255,255,.94);box-shadow:0 14px 34px rgba(0,0,0,.25);backdrop-filter:blur(8px)}.hero__seal img{width:100%;height:100%;object-fit:contain}.hero__photo-caption{position:absolute;z-index:3;left:122px;right:28px;bottom:31px;color:#fff}.hero__photo-caption strong,.hero__photo-caption span{display:block}.hero__photo-caption strong{font:600 1.03rem/1.3 var(--serif)}.hero__photo-caption span{margin-top:2px;color:#d9f3f7;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase}.hero__visual>.hero__badge{top:54px;right:-22px;bottom:auto}
+.footer{position:relative}.footer:before{content:'';position:absolute;inset:0 0 auto;height:7px;background:repeating-linear-gradient(90deg,var(--cyan) 0 18px,var(--coral) 18px 36px,transparent 36px 44px);opacity:.75}
+@media(max-width:900px){.section>.shell:before{top:-55px}.section>.shell:after{top:-37px;width:42vw}.hero__lantern-art{left:15px;top:67px;width:112px;opacity:.82}.identity-vision,.ppdb-panel{border-radius:58px 58px 20px 20px}}
+@media(max-width:600px){.section:before{background-size:auto,390px auto}.section>.shell:before{top:-47px;width:31px;height:31px}.section>.shell:after{top:-32px;width:48vw}.hero__lantern-art{left:auto;right:10px;top:59px;width:82px;opacity:.72}.hero__photo{border-radius:150px 150px 26px 26px}.hero__photo:after{inset:10px;border-radius:140px 140px 19px 19px}.hero__seal{left:18px;bottom:18px;width:62px;height:62px}.hero__photo-caption{left:92px;right:18px;bottom:21px}.hero__photo-caption strong{font-size:.88rem}.hero__photo-caption span{font-size:.6rem}.hero__visual>.hero__badge{top:34px;right:-10px;transform:scale(.86);transform-origin:top right}.identity-card i{width:42px;height:48px}.identity-vision,.ppdb-panel{border-radius:42px 42px 18px 18px}}
+@media(prefers-reduced-motion:reduce){.hero__lantern-art{animation:none;transform:none;will-change:auto}}
 </style></head>
 @php
 $fallback='Pondok Pesantren Tahfidzul Qur’an Al-Madinah Al-Kamilah';$displayName=str_contains(strtolower((string)($brandName??'')),'bubba')?$fallback:($brandName?:$fallback);$logo=asset('logo/al-madinatul-kamilah.png');$aboutText=$about['story']['content'][0]['text']??$websiteDescription??'Pondok pesantren yang berfokus pada pembentukan generasi penghafal Al-Qur’an yang berilmu, beradab, mandiri, dan bermanfaat bagi umat.';$phone=$contact['phones'][0]??['number'=>'+6287831633012','displayNumber'=>'+62 878-3163-3012','whatsappUrl'=>'https://wa.me/6287831633012'];$email=$contact['emails'][0]['email']??null;$address=$contact['address']['fullAddress']??'Informasi alamat pondok akan segera diperbarui.';$wa='https://wa.me/6287831633012?text='.rawurlencode("Assalamu'alaikum, saya ingin bertanya mengenai Pondok Pesantren Al-Madinah Al-Kamilah.");$legacyHeroPattern='/\b(homecare|pijat|bubba|pregnancy|postnatal|newborn|bayi|ibu hamil|bdn\.)\b/i';$heroDescription=trim((string)($hero['description']??''));$heroPart1=trim((string)($hero['heading']['part1']??''));$heroPart2=trim((string)($hero['heading']['part2']??''));$heroEyebrow=trim((string)($hero['badge']['text']??''));if($heroDescription===''||preg_match($legacyHeroPattern,$heroDescription))$heroDescription='Pendidikan tahfidz yang memadukan hafalan Al-Qur’an, pemahaman agama, adab, dan kemandirian dalam lingkungan pondok yang hangat.';if($heroPart1===''||preg_match($legacyHeroPattern,$heroPart1))$heroPart1='Dekat dengan Al-Qur’an';if($heroPart2===''||preg_match($legacyHeroPattern,$heroPart2))$heroPart2='Mulia dalam Kehidupan.';if($heroEyebrow===''||preg_match($legacyHeroPattern,$heroEyebrow))$heroEyebrow='Mencetak Generasi Qur’ani';$heroButtons=array_slice(is_array($hero['buttons']??null)?$hero['buttons']:[],0,2);$safeHeroLink=static function($url,$fallbackLink)use($wa){$url=trim((string)$url);if($url==='#contact')return $wa;if(str_starts_with($url,'#')||str_starts_with($url,'/')||preg_match('/^https?:\/\//i',$url))return $url;return $fallbackLink;};
@@ -52,7 +78,7 @@ if (empty($aboutParagraphs)) {
 }
 @endphp
 <body>@include('partials.landing-navbar',['brandName'=>$displayName,'whatsappUrl'=>$wa])<main>
-<section class="hero" id="home"><div class="shell hero__grid"><div><span class="eyebrow">{{ $heroEyebrow }}</span><h1>{{ $heroPart1 }}, <span>{{ $heroPart2 }}</span></h1><p class="hero__copy">{{ $heroDescription }}</p><div class="actions">@forelse($heroButtons as $i=>$button)@php $heroHref=$safeHeroLink($button['link']??null,$i===0?'#program':$wa); @endphp<a class="btn {{ $i===0?'btn--primary':'btn--ghost' }}" href="{{ $heroHref }}" @if(str_starts_with($heroHref,'https://wa.me/')) target="_blank" rel="noopener" @endif>{{ $button['text']??($i===0?'Jelajahi Program':'Informasi Pendaftaran') }} <i class="{{ $button['icon']??($i===0?'ri-arrow-down-line':'ri-customer-service-2-line') }}"></i></a>@empty<a class="btn btn--primary" href="#program">Jelajahi Program <i class="ri-arrow-down-line"></i></a><a class="btn btn--ghost" href="{{ $wa }}" target="_blank" rel="noopener"><i class="ri-whatsapp-line"></i> Informasi Pendaftaran</a>@endforelse</div></div><div class="hero__visual"><div class="hero__logo"><img src="{{ $logo }}" alt="Logo {{ $displayName }}"></div><div class="hero__badge"><i class="ri-shield-check-line"></i><span><strong>Pendidikan Terpadu</strong><small>Qur’an • Ilmu • Adab</small></span></div></div></div></section>
+<section class="hero" id="home"><img class="hero__lantern-art" src="{{ asset('assets/islamic-lanterns.png') }}" alt="" aria-hidden="true"><div class="shell hero__grid"><div><span class="eyebrow">{{ $heroEyebrow }}</span><h1>{{ $heroPart1 }}, <span>{{ $heroPart2 }}</span></h1><p class="hero__copy">{{ $heroDescription }}</p><div class="actions">@forelse($heroButtons as $i=>$button)@php $heroHref=$safeHeroLink($button['link']??null,$i===0?'#program':$wa); @endphp<a class="btn {{ $i===0?'btn--primary':'btn--ghost' }}" href="{{ $heroHref }}" @if(str_starts_with($heroHref,'https://wa.me/')) target="_blank" rel="noopener" @endif>{{ $button['text']??($i===0?'Jelajahi Program':'Informasi Pendaftaran') }} <i class="{{ $button['icon']??($i===0?'ri-arrow-down-line':'ri-customer-service-2-line') }}"></i></a>@empty<a class="btn btn--primary" href="#program">Jelajahi Program <i class="ri-arrow-down-line"></i></a><a class="btn btn--ghost" href="{{ $wa }}" target="_blank" rel="noopener"><i class="ri-whatsapp-line"></i> Informasi Pendaftaran</a>@endforelse</div></div><div class="hero__visual"><div class="hero__photo"><img src="{{ asset('assets/hero-santri.jpg') }}" alt="Kebersamaan santri dan keluarga Pondok Pesantren Al-Madinah Al-Kamilah"><span class="hero__seal"><img src="{{ $logo }}" alt=""></span><span class="hero__photo-caption"><strong>Tumbuh bersama Al-Qur’an</strong><span>Ilmu • Adab • Kebersamaan</span></span></div><div class="hero__badge"><i class="ri-shield-check-line"></i><span><strong>Pendidikan Terpadu</strong><small>Qur’an • Ilmu • Adab</small></span></div></div></div></section>
 <div class="quick"><div class="shell quick__grid"><div class="quick__item"><span class="icon"><i class="ri-book-2-line"></i></span><div><h3>Kurikulum Tahfidz</h3><p>Target hafalan dan murajaah konsisten.</p></div></div><div class="quick__item"><span class="icon"><i class="ri-parent-line"></i></span><div><h3>Asatidz Pembimbing</h3><p>Pendampingan dekat dalam belajar dan beradab.</p></div></div><div class="quick__item"><span class="icon"><i class="ri-home-heart-line"></i></span><div><h3>Lingkungan Islami</h3><p>Suasana nyaman untuk tumbuh bersama Al-Qur’an.</p></div></div></div></div>
 <section class="section white" id="about"><div class="shell about reveal"><div class="about__visual"><img src="{{ $logo }}" alt="Lambang pondok"><div class="quote">“Sebaik-baik kalian adalah yang mempelajari Al-Qur’an dan mengajarkannya.”</div></div><div class="about__copy"><span class="eyebrow">Tentang Pondok</span><h2>Menumbuhkan Huffazh yang Berilmu dan Berakhlak.</h2><div class="about__paragraphs">@foreach($aboutParagraphs as $paragraph)<p>{{ $paragraph }}</p>@endforeach</div><div class="checks"><span><i class="ri-checkbox-circle-fill"></i>Pendampingan intensif</span><span><i class="ri-checkbox-circle-fill"></i>Murajaah terstruktur</span><span><i class="ri-checkbox-circle-fill"></i>Pembiasaan ibadah</span><span><i class="ri-checkbox-circle-fill"></i>Pendidikan karakter</span></div><a class="btn btn--primary" href="#program">Program Unggulan</a></div></div></section>
 @include('partials.pondok-identity-sections')
@@ -64,4 +90,113 @@ if (empty($aboutParagraphs)) {
 <section class="section soft" id="news"><div class="shell"><div class="head reveal"><div><span class="eyebrow">Kabar Pondok</span><h2>Informasi dan Cerita Terbaru.</h2></div><p>Ikuti kabar kegiatan, capaian santri, agenda pondok, dan artikel seputar pendidikan Al-Qur’an.</p></div><div class="news">@forelse(array_slice($news??[],0,3) as $article)@php($ni=$mediaUrl($article['featured_image']['url']??null))<article class="news__item reveal"><div class="news__media">@if($ni)<img src="{{ $ni }}" alt="{{ $article['title'] }}" loading="lazy">@endif</div><div class="news__body"><span class="meta">Kabar Pondok</span><h3>{{ $article['title'] }}</h3><p>{{ $article['excerpt']??'' }}</p><a class="more" href="{{ route('landing.news.detail',['id'=>$article['_id'],'slug'=>$article['slug']??null]) }}">Baca selengkapnya <i class="ri-arrow-right-line"></i></a></div></article>@empty @foreach([['Penerimaan Santri Baru','Informasi pendaftaran akan diumumkan melalui halaman ini.'],['Agenda Pondok','Ikuti kegiatan tahfidz, kajian, dan pembinaan santri.'],['Capaian Santri','Kabar perkembangan hafalan dan prestasi santri.']] as $n)<article class="news__item reveal"><div class="news__media"></div><div class="news__body"><span class="meta">Segera Hadir</span><h3>{{ $n[0] }}</h3><p>{{ $n[1] }}</p><a class="more" href="{{ $wa }}" target="_blank" rel="noopener">Hubungi admin <i class="ri-whatsapp-line"></i></a></div></article>@endforeach @endforelse</div></div></section>
 <section class="cta" id="contact"><div class="shell cta__inner reveal"><div><span class="eyebrow" style="color:#e5c778">Mari Bertumbuh Bersama</span><h2>Siapkan langkah terbaik untuk perjalanan Qur’ani putra-putri Anda.</h2><p>Hubungi pengelola pondok untuk informasi program, jadwal kunjungan, dan pendaftaran santri.</p><p><i class="ri-map-pin-line"></i> {{ $address }}</p></div><a class="btn btn--light" href="{{ $wa }}" target="_blank" rel="noopener"><i class="ri-whatsapp-line"></i> WhatsApp +62 878-3163-3012</a></div></section>
 </main><footer class="footer"><div class="shell"><div class="footer__grid"><div><div class="footer__brand"><img src="{{ $logo }}" alt="Logo pondok"><h3>{{ $displayName }}</h3></div><p>Pendidikan tahfidz untuk membentuk generasi berilmu, beradab, dan bermanfaat.</p></div><div><h3>Navigasi</h3><div class="footer__links"><a href="#about">Profil Pondok</a><a href="#program">Program</a><a href="{{ route('landing.gallery.index') }}">Galeri</a><a href="{{ route('landing.news.index') }}">Kabar</a></div></div><div><h3>Hubungi Kami</h3><p>{{ $address }}</p><a href="{{ $wa }}" target="_blank" rel="noopener"><i class="ri-whatsapp-line"></i> +62 878-3163-3012</a>@if($email)<br><a href="mailto:{{ $email }}">{{ $email }}</a>@endif</div></div><div class="bottom"><span>© {{ date('Y') }} {{ $displayName }}.</span><span>Qur’an • Ilmu • Adab</span></div></div></footer>
-@include('partials.murottal-player')@include('partials.floating-buttons',['floatingButtons'=>$floatingButtons??[]])@include('partials.active-popups',['activePopups'=>$activePopups??[]])<script>const o=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');o.unobserve(x.target)}}),{threshold:.08});document.querySelectorAll('.reveal').forEach(x=>o.observe(x));</script></body></html>
+@include('partials.murottal-player')@include('partials.floating-buttons',['floatingButtons'=>$floatingButtons??[]])@include('partials.active-popups',['activePopups'=>$activePopups??[]])
+<script>
+(()=>{
+ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const selector=['.hero__grid>div','.quick__item','.about>*','.head>*','.identity-layout>*','.identity-card','.welcome>*','.card','.stat','.gallery__item','.news__item','.cta__inner>*','.ppdb-layout>*'].join(',');
+ const items=[...new Set([...document.querySelectorAll('.reveal'),...document.querySelectorAll(selector)])];
+ const groups=['.quick__grid','.cards','.identity-grid','.stats__grid','.gallery','.news','.checks','.identity-mission ol','.ppdb-details'];
+ items.forEach(el=>el.classList.add('reveal'));
+ groups.forEach(group=>document.querySelectorAll(group).forEach(parent=>[...parent.children].forEach((child,index)=>{
+   child.classList.add('reveal');
+   child.style.setProperty('--reveal-delay',`${Math.min(index,7)*75}ms`);
+ })));
+ document.querySelectorAll('.about>*:first-child,.welcome>*:first-child,.identity-layout>*:first-child,.ppdb-layout>*:first-child').forEach(el=>el.dataset.reveal='left');
+ document.querySelectorAll('.about>*:last-child,.welcome>*:last-child,.identity-layout>*:last-child,.ppdb-layout>*:last-child').forEach(el=>el.dataset.reveal='right');
+ document.querySelectorAll('.card,.identity-card,.gallery__item,.news__item,.quick__item').forEach(el=>el.dataset.reveal='scale');
+ document.documentElement.classList.add('motion-ready');
+ const all=[...document.querySelectorAll('.reveal')];
+ if(reduced||!('IntersectionObserver'in window)){
+   all.forEach(el=>{el.classList.remove('reveal');el.classList.add('motion-revealed')});
+   return;
+ }
+ const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+   if(!entry.isIntersecting)return;
+   const el=entry.target;
+   el.classList.add('on');
+   observer.unobserve(el);
+   el.addEventListener('animationend',()=>{
+     el.classList.remove('reveal','on');
+     el.classList.add('motion-revealed');
+     el.style.removeProperty('--reveal-delay');
+   },{once:true});
+ }),{threshold:.12,rootMargin:'0px 0px -10% 0px'});
+ all.forEach(el=>observer.observe(el));
+})();
+(()=>{
+ const desktop=window.matchMedia('(min-width: 901px) and (pointer: fine)');
+ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+ const config={threshold:54,resetAfter:170,duration:820,quietRelease:360,edgeTolerance:72,navOffset:83};
+ let accumulated=0,lastWheelAt=0,locked=false,animationUntil=0,raf=0,unlockTimer=0,enabled=false;
+ const sections=()=>[...document.querySelectorAll('main > section')];
+ const ease=t=>1-Math.pow(1-t,5);
+ const currentSection=()=>{
+   const marker=window.scrollY+config.navOffset+Math.min(150,window.innerHeight*.22);
+   return sections().reduce((found,section)=>section.offsetTop<=marker?section:found,sections()[0]);
+ };
+ const canLeave=(section,direction)=>{
+   const top=section.offsetTop-config.navOffset;
+   const bottom=section.offsetTop+section.offsetHeight;
+   if(section.offsetHeight<=window.innerHeight-config.navOffset+config.edgeTolerance)return true;
+   return direction>0
+     ? window.scrollY+window.innerHeight>=bottom-config.edgeTolerance
+     : window.scrollY<=top+config.edgeTolerance;
+ };
+ const scrollToSection=target=>{
+   cancelAnimationFrame(raf);
+   const start=window.scrollY;
+   const destination=Math.max(0,target.offsetTop-config.navOffset);
+   const distance=destination-start;
+   const started=performance.now();
+   locked=true;
+   animationUntil=started+config.duration;
+   const frame=now=>{
+     const progress=Math.min(1,(now-started)/config.duration);
+     window.scrollTo(0,start+distance*ease(progress));
+     if(progress<1)raf=requestAnimationFrame(frame);
+   };
+   raf=requestAnimationFrame(frame);
+   scheduleUnlock();
+ };
+ const scheduleUnlock=()=>{
+   clearTimeout(unlockTimer);
+   const remaining=Math.max(0,animationUntil-performance.now());
+   unlockTimer=setTimeout(()=>{locked=false;accumulated=0},Math.max(config.quietRelease,remaining+120));
+ };
+ const onWheel=event=>{
+   if(!enabled||event.ctrlKey||Math.abs(event.deltaX)>Math.abs(event.deltaY))return;
+   if(locked){event.preventDefault();scheduleUnlock();return}
+   const now=performance.now();
+   if(now-lastWheelAt>config.resetAfter||Math.sign(accumulated)!==Math.sign(event.deltaY))accumulated=0;
+   lastWheelAt=now;
+   const direction=Math.sign(event.deltaY);
+   if(!direction)return;
+   const list=sections();
+   const current=currentSection();
+   const index=list.indexOf(current);
+   if(index<0||!canLeave(current,direction))return;
+   const target=list[index+direction];
+   if(!target)return;
+   event.preventDefault();
+   accumulated+=event.deltaY;
+   if(Math.abs(accumulated)>=config.threshold)scrollToSection(target);
+ };
+ const sync=()=>{
+   enabled=desktop.matches&&!reduced.matches;
+   document.documentElement.classList.toggle('section-wheel-ready',enabled);
+   if(!enabled){locked=false;accumulated=0;cancelAnimationFrame(raf);clearTimeout(unlockTimer)}
+ };
+ window.addEventListener('wheel',onWheel,{passive:false});
+ desktop.addEventListener('change',sync);
+ reduced.addEventListener('change',sync);
+ window.addEventListener('pagehide',()=>{
+   window.removeEventListener('wheel',onWheel);
+   desktop.removeEventListener('change',sync);
+   reduced.removeEventListener('change',sync);
+   cancelAnimationFrame(raf);
+   clearTimeout(unlockTimer);
+ },{once:true});
+ sync();
+})();
+</script></body></html>
