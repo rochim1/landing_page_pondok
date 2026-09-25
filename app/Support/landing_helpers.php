@@ -241,6 +241,10 @@ function landing_detail_context(array $overrides = []): array
     $settings = landing_website_settings();
     $defaultLogo = landing_instansi_logo();
 
+    if (isset($overrides['seo']) && is_array($overrides['seo'])) {
+        $overrides['seo'] = array_merge(landing_seo_settings(), $overrides['seo']);
+    }
+
     return array_merge([
         'brandName' => ($settings['siteName'] ?? null) ?: 'Bubba Bloom - Mom & Baby Care',
         'brandLogo' => !empty($settings['logo']) ? landing_instansi_logo($settings['logo']) : $defaultLogo,

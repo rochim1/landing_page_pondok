@@ -34,6 +34,52 @@ Route::get('/sitemap.xml', function () {
         'priority' => $path === '/' ? '1.0' : '0.8',
     ], $paths);
 
+    $query = <<<'GRAPHQL'
+        query GetLandingSitemap($newsFilter: NewsFilter, $galleryFilter: GalleryFilter) {
+          GetAllNews(filter: $newsFilter, sorting: { published_at: desc }, pagination: { page: 0, limit: 500 }) {
+            news { _id slug published_at }
+          }
+          GetAllGallery(filter: $galleryFilter, sorting: { field: "createdAt", sort: "DESC" }, pagination: { page: 1, limit: 500 }) {
+            data { _id createdAt }
+          }
+        }
+    GRAPHQL;
+
+    try {
+        $data = (new GraphQLClient())->queryCached('landing-sitemap', $query, [
+            'newsFilter' => [
+                'status' => 'published',
+                'visibility' => 'public',
+                'instansi_id' => landing_instansi_id(),
+            ],
+            'galleryFilter' => ['isActive' => true],
+        ], null, 300);
+
+        foreach ($data['GetAllNews']['news'] ?? [] as $article) {
+            if (empty($article['_id'])) continue;
+            $slug = trim((string) ($article['slug'] ?? ''));
+            $path = '/berita/' . $article['_id'] . ($slug !== '' ? '/' . $slug : '');
+            $urls[] = [
+                'loc' => $baseUrl . $path,
+                'lastmod' => !empty($article['published_at']) ? $article['published_at'] : $lastModified,
+                'changefreq' => 'monthly',
+                'priority' => '0.7',
+            ];
+        }
+
+        foreach ($data['GetAllGallery']['data'] ?? [] as $gallery) {
+            if (empty($gallery['_id'])) continue;
+            $urls[] = [
+                'loc' => $baseUrl . '/galeri/' . $gallery['_id'],
+                'lastmod' => !empty($gallery['createdAt']) ? $gallery['createdAt'] : $lastModified,
+                'changefreq' => 'monthly',
+                'priority' => '0.6',
+            ];
+        }
+    } catch (\Throwable) {
+        // Static public pages remain available when the content API is temporarily unavailable.
+    }
+
     $xml = view('partials.sitemap', ['urls' => $urls])->render();
     return response($xml, 200)->header('Content-Type', 'application/xml; charset=UTF-8');
 })->name('landing.sitemap');
@@ -138,6 +184,7 @@ Route::get('/', function () {
               slug
               excerpt
               featured_image { url alt caption }
+              category_id { name slug }
               published_at
               reading_time
               tags
@@ -271,12 +318,14 @@ Route::get('/', function () {
               fullName
               tagline
               description
+              missionStatement
             }
             story {
               badge
               title
               content { paragraph text }
               image { url alt caption description }
+              highlights { text color description }
             }
             visionMission {
               title
@@ -343,6 +392,7 @@ Route::get('/', function () {
               slug
               excerpt
               featured_image { url alt caption }
+              category_id { name slug }
               published_at
               reading_time
               tags
@@ -606,13 +656,15 @@ Route::get('/berita', function () {
     $search = trim((string) request('search', ''));
     $category = trim((string) request('category', ''));
     $tag = trim((string) request('tag', ''));
+    $page = max(1, (int) request('page', 1));
+    $perPage = 9;
     if ($category !== '' && !preg_match('/^[a-f0-9]{24}$/i', $category)) {
         $category = '';
     }
 
     $query = <<<'GRAPHQL'
-        query GetLandingNewsIndex($newsFilter: NewsFilter, $categoryFilter: NewsCategoryFilter) {
-          GetAllNews(filter: $newsFilter, pagination: { page: 0, limit: 24 }) {
+        query GetLandingNewsIndex($newsFilter: NewsFilter, $categoryFilter: NewsCategoryFilter, $pagination: PaginationInput) {
+          GetAllNews(filter: $newsFilter, sorting: { published_at: desc }, pagination: $pagination) {
             news {
               _id
               title
@@ -664,6 +716,10 @@ Route::get('/berita', function () {
                     'status' => 'active',
                     'instansi_id' => $instansiId,
                 ],
+                'pagination' => [
+                    'page' => $page - 1,
+                    'limit' => $perPage,
+                ],
             ],
             null,
             config('landing.cache.listing_ttl', 30)
@@ -677,11 +733,27 @@ Route::get('/berita', function () {
         $total = 0;
     }
 
+    $formatPublishedDate = static function ($value): ?string {
+        if ($value === null || $value === '') return null;
+        try {
+            $date = is_numeric($value)
+                ? \Illuminate\Support\Carbon::createFromTimestamp(((float) $value) > 9999999999 ? ((float) $value) / 1000 : (float) $value)
+                : \Illuminate\Support\Carbon::parse($value);
+            return $date->locale('id')->translatedFormat('d M Y');
+        } catch (\Throwable $e) {
+            return null;
+        }
+    };
+    $items = array_map(function (array $item) use ($formatPublishedDate): array {
+        $item['published_label'] = $formatPublishedDate($item['published_at'] ?? null);
+        return $item;
+    }, $items);
+
     return view('listing', landing_detail_context([
         'type' => 'news',
-        'eyebrow' => 'Berita',
-        'title' => 'Berita & Artikel',
-        'description' => 'Kumpulan artikel, tips, dan kabar terbaru seputar perawatan ibu, bayi, dan anak.',
+        'eyebrow' => 'Kabar Pondok',
+        'title' => 'Informasi dan Cerita Terbaru',
+        'description' => 'Kumpulan kabar kegiatan, capaian santri, agenda pondok, dan artikel pendidikan Al-Qur’an yang dikelola melalui web admin.',
         'items' => $items,
         'total' => $total,
         'filters' => [
@@ -691,6 +763,12 @@ Route::get('/berita', function () {
         ],
         'filterOptions' => [
             'categories' => $categories,
+        ],
+        'pagination' => [
+            'currentPage' => $page,
+            'perPage' => $perPage,
+            'total' => (int) $total,
+            'lastPage' => max(1, (int) ceil(((int) $total) / $perPage)),
         ],
         'emptyTitle' => ($search || $category || $tag) ? 'Tidak ada berita yang cocok.' : 'Belum ada berita.',
         'emptyDescription' => ($search || $category || $tag) ? 'Coba ubah kata kunci, kategori, atau tag filter.' : 'Artikel published-public dari admin akan tampil di halaman ini.',
@@ -897,10 +975,10 @@ Route::get('/event/{id}/{slug?}', function (string $id) {
     ]));
 })->name('landing.event.detail');
 
-Route::get('/berita/{id}/{slug?}', function (string $id) {
+Route::get('/berita/{id}/{slug?}', function (string $id, ?string $slug = null) {
     $client = new GraphQLClient();
     $query = <<<'GRAPHQL'
-        query GetLandingNewsDetail($id: ID!) {
+        query GetLandingNewsDetail($id: ID!, $relatedFilter: NewsFilter) {
           GetOneNews(_id: $id) {
             _id
             title
@@ -913,29 +991,87 @@ Route::get('/berita/{id}/{slug?}', function (string $id) {
             tags
             reading_time
             published_at
+            status
+            visibility
+            instansi_id { _id }
+            created_by { name username }
+            published_by { name username }
+            seo { meta_title meta_description meta_keywords og_title og_description og_image canonical_url }
+          }
+          RelatedNews: GetAllNews(filter: $relatedFilter, sorting: { published_at: desc }, pagination: { page: 0, limit: 4 }) {
+            news {
+              _id
+              title
+              slug
+              excerpt
+              featured_image { url alt }
+              category_id { name }
+              published_at
+            }
           }
         }
     GRAPHQL;
 
     try {
-        $article = $client->queryCached(
+        $detailData = $client->queryCached(
             'news-detail',
             $query,
-            ['id' => $id],
+            [
+                'id' => $id,
+                'relatedFilter' => [
+                    'status' => 'published',
+                    'visibility' => 'public',
+                    'instansi_id' => landing_instansi_id(),
+                ],
+            ],
             null,
             config('landing.cache.detail_ttl', 60)
-        )['GetOneNews'] ?? null;
+        );
+        $article = $detailData['GetOneNews'] ?? null;
+        $relatedNews = array_values(array_filter(
+            $detailData['RelatedNews']['news'] ?? [],
+            fn (array $item) => (string) ($item['_id'] ?? '') !== $id
+        ));
+        $relatedNews = array_slice($relatedNews, 0, 3);
     } catch (\Exception $e) {
         $article = null;
+        $relatedNews = [];
     }
 
     abort_if(!$article, 404, 'Berita tidak ditemukan');
+    abort_if(($article['status'] ?? null) !== 'published' || ($article['visibility'] ?? null) !== 'public', 404, 'Berita tidak ditemukan');
+    abort_if((string) data_get($article, 'instansi_id._id') !== (string) landing_instansi_id(), 404, 'Berita tidak ditemukan');
+
+    $canonicalSlug = trim((string) ($article['slug'] ?? ''));
+    if ($canonicalSlug !== '' && $slug !== $canonicalSlug) {
+        return redirect()->route('landing.news.detail', ['id' => $id, 'slug' => $canonicalSlug], 301);
+    }
 
     $image = landing_media_url($article['featured_image']['url'] ?? null);
     $chips = array_filter([
         $article['category_id']['name'] ?? null,
         !empty($article['reading_time']) ? $article['reading_time'] . ' menit baca' : null,
     ]);
+    $publishedAt = null;
+    $publishedAtIso = null;
+    if (!empty($article['published_at'])) {
+        try {
+            $rawPublishedAt = $article['published_at'];
+            $publishedDate = (is_numeric($rawPublishedAt)
+                ? \Illuminate\Support\Carbon::createFromTimestamp(((float) $rawPublishedAt) > 9999999999 ? ((float) $rawPublishedAt) / 1000 : (float) $rawPublishedAt)
+                : \Illuminate\Support\Carbon::parse($rawPublishedAt));
+            $publishedAt = $publishedDate->locale('id')->translatedFormat('d F Y');
+            $publishedAtIso = $publishedDate->toAtomString();
+        } catch (\Throwable $e) {
+            $publishedAt = null;
+        }
+    }
+    $authorName = data_get($article, 'published_by.name') ?: data_get($article, 'created_by.name');
+    $detailHighlights = array_values(array_filter([
+        $publishedAt ? ['label' => 'Diterbitkan', 'value' => $publishedAt, 'icon' => 'ri-calendar-line'] : null,
+        $authorName ? ['label' => 'Penulis', 'value' => $authorName, 'icon' => 'ri-user-3-line'] : null,
+        !empty($article['featured_image']['caption']) ? ['label' => 'Keterangan Foto', 'value' => $article['featured_image']['caption'], 'icon' => 'ri-image-line'] : null,
+    ]));
     $contentHtml = trim((string) ($article['content'] ?? ''));
     if (trim(strip_tags(html_entity_decode($contentHtml))) === '') {
         $contentHtml = '<p>' . e($article['excerpt'] ?? 'Informasi berita akan segera diperbarui.') . '</p>';
@@ -950,9 +1086,28 @@ Route::get('/berita/{id}/{slug?}', function (string $id) {
         'content' => $article['content'] ?? $article['excerpt'] ?? '',
         'image' => $image,
         'imageAlt' => $article['featured_image']['alt'] ?? $article['title'] ?? 'Berita Bubba Bloom',
+        'imageCaption' => $article['featured_image']['caption'] ?? null,
         'chips' => $chips,
         'tags' => $article['tags'] ?? [],
         'gallery' => $article['media_gallery'] ?? [],
+        'highlights' => $detailHighlights,
+        'publishedAt' => $publishedAt,
+        'publishedAtIso' => $publishedAtIso,
+        'authorName' => $authorName,
+        'relatedNews' => array_map(function (array $item): array {
+            $item['image'] = landing_media_url(data_get($item, 'featured_image.url'));
+            $item['url'] = route('landing.news.detail', ['id' => $item['_id'], 'slug' => $item['slug'] ?? null]);
+            return $item;
+        }, $relatedNews),
+        'seo' => array_filter([
+            'metaTitle' => data_get($article, 'seo.meta_title'),
+            'metaDescription' => data_get($article, 'seo.meta_description'),
+            'metaKeywords' => is_array(data_get($article, 'seo.meta_keywords')) ? implode(', ', data_get($article, 'seo.meta_keywords')) : data_get($article, 'seo.meta_keywords'),
+            'ogTitle' => data_get($article, 'seo.og_title'),
+            'ogDescription' => data_get($article, 'seo.og_description'),
+            'ogImage' => data_get($article, 'seo.og_image'),
+            'canonicalUrl' => data_get($article, 'seo.canonical_url'),
+        ]),
         'backUrl' => route('landing.news.index'),
         'backLabel' => 'Kembali ke Berita',
     ]));

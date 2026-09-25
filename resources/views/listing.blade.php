@@ -308,8 +308,10 @@
         .grid {
             display: grid;
             gap: 22px;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
         }
+
+        .news-card{display:flex;min-width:0;overflow:hidden;flex-direction:column;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:none;transition:transform .25s ease,box-shadow .25s ease}.news-card:hover{transform:translateY(-5px);box-shadow:0 22px 50px rgba(9,47,85,.10)}.news-card__media{display:grid;height:205px;place-items:center;overflow:hidden;background:linear-gradient(135deg,var(--brand-dark),var(--brand));color:#fff;font-size:2.3rem}.news-card__media img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;transition:transform .35s ease}.news-card:hover .news-card__media img{transform:scale(1.025)}.news-card__body{display:flex;flex:1;flex-direction:column;padding:23px}.news-card__meta{display:flex;flex-wrap:wrap;gap:5px 9px;margin:0 0 8px;color:var(--accent);font-size:.69rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}.news-card h2{margin:0;color:var(--brand-dark);font:600 1.35rem/1.2 var(--font-heading)}.news-card p{display:-webkit-box;margin:10px 0 16px;overflow:hidden;color:var(--muted);font-size:.82rem;line-height:1.65;-webkit-box-orient:vertical;-webkit-line-clamp:3}.news-card .card-link{margin-top:auto;color:var(--brand);font-size:.77rem;font-weight:800}.news-card .card-link:hover{color:var(--accent);text-decoration:none}
 
         .gallery-feed {
             display: grid;
@@ -501,6 +503,13 @@
             text-underline-offset: 0.2em;
         }
 
+        .card-meta { display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 12px;color:var(--muted);font-size:.78rem;font-weight:700; }
+        .card-meta span { display:inline-flex;align-items:center;gap:6px; }
+        .pagination { display:flex;justify-content:center;align-items:center;gap:8px;margin-top:36px; }
+        .page-link { display:inline-grid;min-width:44px;height:44px;place-items:center;padding:0 13px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--brand-dark);font-weight:800; }
+        .page-link:hover,.page-link.is-current { border-color:var(--brand);background:var(--brand);color:#fff; }
+        .page-link.is-disabled { opacity:.42;pointer-events:none; }
+
         a:focus-visible,
         button:focus-visible,
         input:focus-visible,
@@ -599,7 +608,11 @@
                 min-height: 0;
                 aspect-ratio: 4 / 5;
             }
+
+            .grid { grid-template-columns: 1fr; }
         }
+
+        @media (min-width:641px) and (max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
         @media (max-width: 900px) {
             .site-nav__links { position: absolute; top: 75px; left: 16px; right: 16px; display: none; padding: 16px; border-radius: 18px; background: #fff; color: var(--brand-dark); box-shadow: 0 20px 50px rgba(4,49,61,.2); }
@@ -684,7 +697,7 @@
                                 type="text"
                                 name="tag"
                                 value="{{ $filters['tag'] ?? '' }}"
-                                placeholder="Contoh: baby massage"
+                                placeholder="Contoh: tahfidz, adab, PPDB"
                             >
                         @endif
                     </div>
@@ -743,20 +756,25 @@
                             $image = $mediaUrl($item['featured_image']['url'] ?? null);
                             $url = route('landing.news.detail', ['id' => $item['_id'], 'slug' => $item['slug'] ?? null]);
                         @endphp
-                        <article class="card">
-                            @if($image)
-                                <img src="{{ $image }}" alt="{{ $item['featured_image']['alt'] ?? $item['title'] ?? 'Berita Bubba Bloom' }}" loading="lazy" decoding="async">
-                            @endif
-                            <div class="card-body">
-                                <span class="chip">
+                        <article class="news-card">
+                            <div class="news-card__media">
+                                @if($image)
+                                    <img src="{{ $image }}" alt="{{ $item['featured_image']['alt'] ?? $item['title'] ?? 'Kabar Pondok' }}" loading="lazy" decoding="async">
+                                @else
                                     <i class="ri-newspaper-line" aria-hidden="true"></i>
-                                    {{ !empty($item['reading_time']) ? $item['reading_time'] . ' menit baca' : ($item['category_id']['name'] ?? 'Berita') }}
-                                </span>
+                                @endif
+                            </div>
+                            <div class="news-card__body">
+                                <div class="news-card__meta">
+                                    <span>{{ $item['category_id']['name'] ?? 'Kabar Pondok' }}</span>
+                                    @if(!empty($item['published_label']))<span>· {{ $item['published_label'] }}</span>@endif
+                                    @if(!empty($item['reading_time']))<span>· {{ $item['reading_time'] }} menit</span>@endif
+                                </div>
                                 <h2>{{ $item['title'] ?? 'Berita' }}</h2>
                                 <p>{{ $item['excerpt'] ?? '' }}</p>
                                 <a class="card-link" href="{{ $url }}">
+                                    Baca selengkapnya
                                     <i class="ri-arrow-right-line" aria-hidden="true"></i>
-                                    Baca detail
                                 </a>
                             </div>
                         </article>
@@ -799,6 +817,20 @@
                     </div>
                 @endforelse
             </main>
+            @if(($type ?? '') === 'news' && !empty($pagination) && ($pagination['lastPage'] ?? 1) > 1)
+                @php
+                    $currentPage = (int) $pagination['currentPage'];
+                    $lastPage = (int) $pagination['lastPage'];
+                    $pageUrl = fn (int $target) => request()->fullUrlWithQuery(['page' => $target]);
+                @endphp
+                <nav class="pagination" aria-label="Navigasi halaman berita">
+                    <a class="page-link {{ $currentPage <= 1 ? 'is-disabled' : '' }}" href="{{ $pageUrl(max(1,$currentPage-1)) }}" aria-label="Halaman sebelumnya"><i class="ri-arrow-left-line"></i></a>
+                    @for($i=max(1,$currentPage-2);$i<=min($lastPage,$currentPage+2);$i++)
+                        <a class="page-link {{ $i === $currentPage ? 'is-current' : '' }}" href="{{ $pageUrl($i) }}" @if($i === $currentPage) aria-current="page" @endif>{{ $i }}</a>
+                    @endfor
+                    <a class="page-link {{ $currentPage >= $lastPage ? 'is-disabled' : '' }}" href="{{ $pageUrl(min($lastPage,$currentPage+1)) }}" aria-label="Halaman berikutnya"><i class="ri-arrow-right-line"></i></a>
+                </nav>
+            @endif
         @endif
     </div>
     @include('partials.floating-buttons', ['floatingButtons' => $floatingButtons ?? []])
