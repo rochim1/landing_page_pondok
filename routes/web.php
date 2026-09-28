@@ -561,7 +561,7 @@ Route::get('/', function () {
                 ['text' => 'Informasi Pendaftaran', 'link' => '#contact', 'type' => 'primary'],
                 ['text' => 'Lihat Program', 'link' => '#program', 'type' => 'secondary'],
             ],
-            'background' => ['image' => $aboutData['heroSection']['backgroundImage'] ?? '/images/hero-mom-baby-care.jpg', 'overlay' => 'rgba(255, 255, 255, 0.65)', 'position' => 'center', 'size' => 'cover'],
+            'background' => ['image' => $aboutData['heroSection']['backgroundImage'] ?? '', 'overlay' => 'rgba(255, 255, 255, 0.65)', 'position' => 'center', 'size' => 'cover'],
             'layout' => ['type' => 'center', 'mascot' => ['image' => '', 'width' => 120, 'alignment' => 'center']],
             'stats' => is_array($aboutData['statistics']) ? $aboutData['statistics'] : [],
             'contact' => [
@@ -582,7 +582,7 @@ Route::get('/', function () {
                 ['text' => 'Informasi Pendaftaran', 'link' => '#contact', 'type' => 'primary'],
                 ['text' => 'Lihat Program', 'link' => '#program', 'type' => 'secondary'],
             ],
-            'background' => ['image' => '/images/hero-mom-baby-care.jpg', 'overlay' => 'rgba(255, 255, 255, 0.65)', 'position' => 'center', 'size' => 'cover'],
+            'background' => ['image' => '', 'overlay' => 'rgba(255, 255, 255, 0.65)', 'position' => 'center', 'size' => 'cover'],
             'layout' => ['type' => 'center', 'mascot' => ['image' => '', 'width' => 120, 'alignment' => 'center']],
             'stats' => [
                 ['value' => 30, 'label' => 'Target Hafalan', 'suffixLabel' => ' Juz'],
