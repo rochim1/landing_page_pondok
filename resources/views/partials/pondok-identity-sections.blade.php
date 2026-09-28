@@ -43,16 +43,19 @@
     .ppdb-section .ppdb-panel{transform:translateY(-6px);background:linear-gradient(145deg,#f8eabe 0%,#efd27f 52%,#dcb247 100%);box-shadow:-8px -8px 28px rgba(255,255,255,.11),0 14px 30px rgba(1,35,44,.2),0 34px 68px rgba(0,22,29,.22),inset 0 1px 0 rgba(255,249,224,.9)}.ppdb-section .ppdb-panel__icon{background:rgba(5,73,88,.1);color:var(--navy);box-shadow:0 8px 18px rgba(89,60,4,.12)}.ppdb-section .ppdb-panel>p{color:#435b5f}.ppdb-section .ppdb-panel li{background:rgba(255,249,226,.72);color:#06475b;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}.ppdb-section .ppdb-panel li:before{color:#c34f37}.ppdb-action{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(135deg,#ff765c,#ed563b);box-shadow:0 14px 30px rgba(182,54,35,.34),0 5px 12px rgba(0,24,31,.16);animation:ppdb-cta-pulse 2.8s ease-in-out infinite}.ppdb-action:before{content:'';position:absolute;z-index:-1;top:-60%;bottom:-60%;left:-45%;width:32%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:ppdb-cta-shine 3.4s ease-in-out infinite}.ppdb-action i{font-size:1.15rem;animation:ppdb-cta-icon 1.9s ease-in-out infinite}.ppdb-action:hover{background:linear-gradient(135deg,#ff856e,#f35e43);box-shadow:0 17px 34px rgba(182,54,35,.4);transform:translateY(-3px);animation-play-state:paused}.ppdb-action:hover:before,.ppdb-action:hover i{animation-play-state:paused}@keyframes ppdb-cta-pulse{0%,100%{transform:translateY(0);box-shadow:0 14px 30px rgba(182,54,35,.32),0 5px 12px rgba(0,24,31,.14)}50%{transform:translateY(-2px);box-shadow:0 19px 38px rgba(246,98,67,.48),0 7px 14px rgba(0,24,31,.14)}}@keyframes ppdb-cta-shine{0%,34%{left:-45%}68%,100%{left:125%}}@keyframes ppdb-cta-icon{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(7deg) scale(1.1)}}@media(prefers-reduced-motion:reduce){.ppdb-action,.ppdb-action:before,.ppdb-action i{animation:none}}
     @media(max-width:900px){.ppdb-layout{gap:34px}.ppdb-panel{max-width:none}}@media(max-width:600px){.ppdb-section h2{font-size:2rem}.ppdb-section .ppdb-details{grid-template-columns:1fr 1fr}.ppdb-action{width:100%}.ppdb-panel{padding:28px 22px}}
     @media(max-width:600px){.identity-vision-section .head h2{font-size:1.75rem}}
+    .identity-layout--without-image{grid-template-columns:1fr}
 </style>
 
 @if($vision || !empty($missions))
 <section class="section soft identity-vision-section" id="vision"><div class="shell">
     <div class="head reveal"><div><span class="eyebrow">Arah Pendidikan</span><h2>{{ $about['visionMission']['title'] ?? 'Visi dan Misi Pondok' }}</h2></div><p>{{ $about['visionMission']['subtitle'] ?? 'Arah pendidikan Al-Madinah Al-Kamilah.' }}</p></div>
-    <div class="identity-layout reveal">
+    <div class="identity-layout{{ $visionImage ? '' : ' identity-layout--without-image' }} reveal">
+        @if($visionImage)
         <figure class="identity-education-image">
-            <img src="{{ asset('assets/arah-pendidikan-santri.jpg') }}" alt="Kebersamaan santri dan asatidz Pondok Pesantren Al-Madinah Al-Kamilah" loading="lazy" decoding="async">
-            <figcaption><i class="ri-book-open-line" aria-hidden="true"></i>Pendidikan yang menyatukan Al-Qur'an, ilmu, dan adab.</figcaption>
+            <img src="{{ $visionImage }}" alt="{{ $visionImageAlt }}" loading="lazy" decoding="async">
+            @if($visionImageCaption)<figcaption><i class="ri-book-open-line" aria-hidden="true"></i>{{ $visionImageCaption }}</figcaption>@endif
         </figure>
+        @endif
         <div class="identity-direction-copy">
             <article class="identity-vision"><i class="{{ $vision['icon'] ?? 'ri-eye-line' }}"></i><h3>{{ $vision['title'] ?? 'Visi' }}</h3><p>{{ $vision['content'] ?? '' }}</p></article>
             <div class="identity-mission"><h3>{{ $about['visionMission']['mission']['title'] ?? 'Misi' }}</h3><ol>@foreach($missions as $mission)<li>{{ $mission['text'] ?? '' }}</li>@endforeach</ol></div>

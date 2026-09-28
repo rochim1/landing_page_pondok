@@ -330,6 +330,7 @@ Route::get('/', function () {
             visionMission {
               title
               subtitle
+              image { url alt caption description }
               vision { title content icon color }
               mission { title icon color items { text } }
             }
