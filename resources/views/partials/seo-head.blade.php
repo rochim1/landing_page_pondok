@@ -51,13 +51,19 @@
     $faviconUrl = $absoluteUrl(($siteIcon ?? null) ?: ($brandLogo ?? asset('logo/al-madinatul-kamilah.png')));
     $allowIndex = ($seoData['robotsIndex'] ?? true) && !$isFilteredPage;
     $robots = ($allowIndex ? 'index' : 'noindex') . ', ' . (($seoData['robotsFollow'] ?? true) ? 'follow' : 'nofollow') . ', max-image-preview:large, max-snippet:-1, max-video-preview:-1';
-    $schemaType = $seoData['schemaType'] ?? 'EducationalOrganization';
+    $allowedSchemaTypes = ['Organization', 'EducationalOrganization', 'School', 'LocalBusiness', 'ProfessionalService', 'MedicalBusiness'];
+    $schemaType = in_array(($seoData['schemaType'] ?? null), $allowedSchemaTypes, true)
+        ? $seoData['schemaType']
+        : 'EducationalOrganization';
     $organizationName = ($seoData['organizationName'] ?? null) ?: $currentBrand;
     $organizationUrl = rtrim(($seoData['organizationUrl'] ?? null) ?: ($configuredCanonical ?: url('/')), '/');
     $organizationLogo = $absoluteUrl($brandLogo ?? $faviconUrl);
     $organizationId = rtrim($organizationUrl, '/') . '#organization';
     $websiteId = rtrim($organizationUrl, '/') . '#website';
     $webPageType = in_array(($type ?? null), ['news', 'gallery', 'faq'], true) ? 'CollectionPage' : 'WebPage';
+    $contactPhone = trim((string) data_get($contact ?? [], 'phones.0.number', ''));
+    $contactEmail = trim((string) data_get($contact ?? [], 'emails.0.email', ''));
+    $contactAddress = trim((string) data_get($contact ?? [], 'address.fullAddress', ''));
     $schemaGraph = [
         [
             '@type' => $schemaType,
@@ -67,6 +73,19 @@
             'logo' => ['@type' => 'ImageObject', 'url' => $organizationLogo],
             'image' => $pageImage ?: $organizationLogo,
             'description' => $seoData['metaDescription'] ?? $pageDescription,
+            'telephone' => $contactPhone ?: null,
+            'email' => $contactEmail ?: null,
+            'address' => $contactAddress ? [
+                '@type' => 'PostalAddress',
+                'streetAddress' => $contactAddress,
+                'addressCountry' => 'ID',
+            ] : null,
+            'contactPoint' => $contactPhone ? [[
+                '@type' => 'ContactPoint',
+                'telephone' => $contactPhone,
+                'contactType' => 'admissions',
+                'availableLanguage' => ['id'],
+            ]] : null,
         ],
         [
             '@type' => 'WebSite',
@@ -75,6 +94,11 @@
             'name' => $organizationName,
             'publisher' => ['@id' => $organizationId],
             'inLanguage' => 'id-ID',
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => route('landing.news.index') . '?search={search_term_string}',
+                'query-input' => 'required name=search_term_string',
+            ],
         ],
         [
             '@type' => $webPageType,
@@ -194,12 +218,18 @@
 <meta name="theme-color" content="#07566a">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="format-detection" content="telephone=no">
+<meta name="application-name" content="{{ $currentBrand }}">
+<meta name="apple-mobile-web-app-title" content="{{ $currentBrand }}">
 <link rel="canonical" href="{{ $canonicalUrl }}">
+<link rel="alternate" hreflang="id-ID" href="{{ $canonicalUrl }}">
+<link rel="alternate" hreflang="x-default" href="{{ $canonicalUrl }}">
+<link rel="sitemap" type="application/xml" title="Sitemap" href="{{ route('landing.sitemap') }}">
 <link rel="icon" href="{{ $faviconUrl }}">
 <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 
 <meta property="og:type" content="{{ ($type ?? null) === 'berita' ? 'article' : 'website' }}">
 <meta property="og:locale" content="id_ID">
+<meta property="og:locale:alternate" content="en_US">
 <meta property="og:site_name" content="{{ $currentBrand }}">
 <meta property="og:title" content="{{ $openGraphTitle }}">
 <meta property="og:description" content="{{ $openGraphDescription }}">
@@ -208,6 +238,7 @@
     <meta property="og:image" content="{{ $pageImage }}">
     <meta property="og:image:secure_url" content="{{ $pageImage }}">
     <meta property="og:image:alt" content="{{ $openGraphTitle }}">
+    <meta property="og:image:type" content="{{ str_ends_with(strtolower(parse_url($pageImage, PHP_URL_PATH) ?: ''), '.png') ? 'image/png' : 'image/jpeg' }}">
 @endif
 @if($isArticle)
     @if(!empty($publishedAtIso))<meta property="article:published_time" content="{{ $publishedAtIso }}">@endif
