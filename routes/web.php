@@ -330,7 +330,6 @@ Route::get('/', function () {
             visionMission {
               title
               subtitle
-              image { url alt caption description }
               vision { title content icon color }
               mission { title icon color items { text } }
             }
@@ -445,6 +444,7 @@ Route::get('/', function () {
             'visibility' => 'public',
         ],
         'newsFilter' => [
+            'lang' => 'IND',
             'status' => 'published',
             'visibility' => 'public',
             'instansi_id' => $instansiId,
@@ -509,6 +509,31 @@ Route::get('/', function () {
         $seo = [];
         $services = [];
         $portfolios = [];
+    }
+
+    // Keep the main landing query compatible with backend versions that do not
+    // yet expose visionMission.image. This optional query must never prevent
+    // Hero, contact, news, or other homepage content from rendering.
+    if ($aboutData) {
+        try {
+            $visionMediaData = $client->queryCached(
+                'home-vision-media',
+                <<<'GRAPHQL'
+                    query GetLandingVisionMedia($aboutFilter: AboutUsFilterInput) {
+                      GetOneAboutUs(filter: $aboutFilter) {
+                        visionMission { image { url alt caption description } }
+                      }
+                    }
+                GRAPHQL,
+                ['aboutFilter' => $variables['aboutFilter']]
+            );
+            $visionImage = data_get($visionMediaData, 'GetOneAboutUs.visionMission.image');
+            if (is_array($visionImage)) {
+                data_set($aboutData, 'visionMission.image', $visionImage);
+            }
+        } catch (\Exception $e) {
+            // The image field is optional until the production API schema is updated.
+        }
     }
 
     if (empty($news) || empty($galleryItems)) {
@@ -597,6 +622,10 @@ Route::get('/', function () {
         ];
     }
 
+    // Preserve every active CMS hero for the carousel. Fallback content remains
+    // a single slide when the API has no configured hero.
+    $heroSections = !empty($heroSections) ? array_values($heroSections) : [$hero];
+
     $backendBaseUrl = landing_backend_base_url();
     $resolveMediaUrl = function (?string $path) use ($backendBaseUrl): ?string {
         if (!$path) {
@@ -626,6 +655,7 @@ Route::get('/', function () {
 
     return view('welcome', [
         'hero' => $hero,
+        'heroSections' => $heroSections,
         'about' => $aboutData,
         'contact' => $contactData,
         'services' => $services,
