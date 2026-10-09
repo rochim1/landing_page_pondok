@@ -1,6 +1,6 @@
 <!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 @include('partials.seo-head')
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Noto+Naskh+Arabic:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="{{ asset('vendor/remixicon/remixicon.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="{{ asset('vendor/remixicon/remixicon.css') }}">
 <style>
 :root{--navy:#07566a;--deep:#04313d;--cyan:#02add0;--coral:#f66243;--cream:#f8fcfd;--ink:#163a46;--muted:#62777f;--line:#d7e9ed;--serif:'DM Serif Display',serif;--sans:'Plus Jakarta Sans',sans-serif}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans);line-height:1.65}a{color:inherit;text-decoration:none}img{display:block;max-width:100%}.shell{width:min(1180px,calc(100% - 48px));margin:auto}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 .site-nav{position:fixed;z-index:100;inset:0 0 auto;height:84px;display:flex;align-items:center;justify-content:space-between;padding:0 max(24px,calc((100vw - 1180px)/2));background:rgba(255,255,255,.95);border-bottom:1px solid #dce6ea;backdrop-filter:blur(18px)}.site-nav__brand{display:flex;align-items:center;gap:11px}.site-nav__brand img{width:58px;height:58px;object-fit:contain}.site-nav__brand span{display:grid;line-height:1.08}.site-nav__brand strong{font:1.08rem var(--serif);letter-spacing:.06em;color:var(--navy)}.site-nav__brand small{font-size:.68rem;font-weight:800;color:var(--coral)}.site-nav__links{display:flex;align-items:center;gap:27px;font-size:.78rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--navy)}.site-nav__cta{padding:12px 18px;border-radius:99px;background:var(--cyan);color:#fff}.site-nav__toggle{display:none;width:44px;height:44px;border:0;border-radius:12px;background:var(--navy);color:#fff;font-size:1.4rem}
@@ -101,6 +101,9 @@ $visionImage = $visionImageSource !== '' ? $mediaUrl($visionImageSource) : null;
 $visionImageAlt = trim((string) data_get($about, 'visionMission.image.alt', '')) ?: 'Kegiatan pendidikan santri Pondok Pesantren Al-Madinah Al-Kamilah';
 $visionImageCaption = trim((string) data_get($about, 'visionMission.image.caption', ''));
 @endphp
+<style>
+    :root { --serif: 'Plus Jakarta Sans', Arial, sans-serif; --sans: 'Plus Jakarta Sans', Arial, sans-serif; }
+</style>
 <body>@include('partials.landing-navbar',['brandName'=>$displayName,'whatsappUrl'=>$wa])<main>
 <section class="hero" id="home" data-hero-carousel aria-roledescription="carousel" aria-label="Informasi utama pondok">
     <div class="hero-carousel__track">
