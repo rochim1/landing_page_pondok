@@ -26,14 +26,14 @@
             <p class="hero__copy">{{ $slideDescription }}</p>
             <div class="actions">
                 @forelse($slideButtons as $buttonIndex => $button)
-                    @php($slideHref = $safeHeroLink($button['link'] ?? null, $buttonIndex === 0 ? '#program' : $wa))
+                    @php($slideHref = $safeHeroLink($button['link'] ?? null, $buttonIndex === 0 ? '#program' : $waPpdb))
                     <a class="btn {{ $buttonIndex === 0 ? 'btn--primary' : 'btn--ghost' }}" href="{{ $slideHref }}" @if(str_starts_with($slideHref, 'https://wa.me/')) target="_blank" rel="noopener" @endif>
                         {{ $button['text'] ?? ($buttonIndex === 0 ? 'Jelajahi Program' : 'Informasi Pendaftaran') }}
                         <i class="{{ $button['icon'] ?? ($buttonIndex === 0 ? 'ri-arrow-down-line' : 'ri-customer-service-2-line') }}"></i>
                     </a>
                 @empty
                     <a class="btn btn--primary" href="#program">Jelajahi Program <i class="ri-arrow-down-line"></i></a>
-                    <a class="btn btn--ghost" href="{{ $wa }}" target="_blank" rel="noopener"><i class="ri-whatsapp-line"></i> Informasi Pendaftaran</a>
+                    <a class="btn btn--ghost" href="{{ $waPpdb }}" target="_blank" rel="noopener"><i class="ri-file-list-3-line"></i> Form Pendaftaran</a>
                 @endforelse
             </div>
         </div>

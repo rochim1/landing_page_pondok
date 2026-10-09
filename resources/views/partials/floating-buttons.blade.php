@@ -11,12 +11,7 @@
         $message = trim((string) ($button['message'] ?? ''));
 
         if ($type === 'whatsapp') {
-            if ($url !== '') {
-                return $url;
-            }
-
-            $digits = preg_replace('/\D+/', '', $phone);
-            return $digits ? 'https://wa.me/' . $digits . ($message ? '?text=' . rawurlencode($message) : '') : '#contact';
+            return 'https://wa.me/6282330412139' . ($message ? '?text=' . rawurlencode($message) : '');
         }
 
         if ($type === 'phone') {

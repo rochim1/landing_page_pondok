@@ -384,7 +384,7 @@
 </head>
 <body>
     <div class="page">
-        @include('partials.landing-navbar', ['whatsappUrl' => 'https://wa.me/6287831633012?text=' . rawurlencode("Assalamu'alaikum, saya ingin bertanya mengenai Pondok Pesantren Al-Madinah Al-Kamilah.")])
+        @include('partials.landing-navbar', ['whatsappUrl' => 'https://wa.me/6282330412139?text=' . rawurlencode("Assalamu'alaikum, saya ingin bertanya mengenai Pondok Pesantren Al-Madinah Al-Kamilah.")])
 
         <main>
             <section class="detail-hero{{ ($type ?? null) === 'berita' ? ' detail-hero--berita' : '' }}">
